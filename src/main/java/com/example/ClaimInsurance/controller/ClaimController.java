@@ -1,9 +1,11 @@
 package com.example.ClaimInsurance.controller;
 
 import com.example.ClaimInsurance.entity.Claim;
+import com.example.ClaimInsurance.entity.ClaimType;
 import com.example.ClaimInsurance.entity.Insurer;
 import com.example.ClaimInsurance.service.ClaimService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 //import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,15 +50,53 @@ public class ClaimController {
         }
     }
 
-    @GetMapping("/{claimNo}")
-    public ResponseEntity<?> findByNo(@PathVariable Long claimNo) {
-       Optional<Claim> getClaim= claimService.findByNo(claimNo);
-       if (getClaim.isPresent()) {
-        return ResponseEntity.ok(getClaim.get());
-    } else {
-        return ResponseEntity.status(404).body("Claim not found");
+  
+@GetMapping("/search/by-claimNo/{claimNo}")
+    public ResponseEntity<?> getByClaimNo(@PathVariable Long claimNo) {
+        Optional<Claim> claim = claimService.findByNo(claimNo);
+        if (claim.isPresent()) {
+            return ResponseEntity.ok(claim.get());
+        } else {
+            return ResponseEntity.status(404).body("Claim not found");
+        }
     }
+
+    // ✅ GET - Search by Claim Type
+    @GetMapping("/search/by-claimType/{claimType}")
+    public ResponseEntity<List<Claim>> getByClaimType(@PathVariable String claimType) {
+        ClaimType type;
+        try {
+            type = ClaimType.valueOf(claimType.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Collections.emptyList());
+        }
+
+        return ResponseEntity.ok(claimService.findByClaimType(type));
     }
+
+    // ✅ GET - Search by Policy Number
+    @GetMapping("/search/by-policy/{policyNo}")
+    public ResponseEntity<List<Claim>> getByPolicy(@PathVariable String policyNo) {
+        return ResponseEntity.ok(claimService.findByPolicyNo(policyNo));
+    }
+
+    // ✅ GET - Search by both Claim Type and Policy Number
+    @GetMapping("/search")
+    public ResponseEntity<List<Claim>> getByTypeAndPolicy(
+            @RequestParam String claimType,
+            @RequestParam String policyNo) {
+
+        ClaimType type;
+        try {
+            type = ClaimType.valueOf(claimType.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Collections.emptyList());
+        }
+
+        return ResponseEntity.ok(claimService.findByTypeAndPolicy(type, policyNo));
+    }
+
+    
 
     @PutMapping("/{claimNo}")
     public ResponseEntity<?> updateClaim(@PathVariable Long claimNo, @RequestBody Insurer insurer) {

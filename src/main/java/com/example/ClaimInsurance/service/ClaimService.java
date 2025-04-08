@@ -9,11 +9,15 @@ import org.springframework.stereotype.Component;
 
 
 import com.example.ClaimInsurance.entity.Claim;
+import com.example.ClaimInsurance.entity.ClaimType;
 import com.example.ClaimInsurance.entity.Insurer;
 import com.example.ClaimInsurance.repository.ClaimRepo;
 
+
+
 @Component
 public class ClaimService {
+
 
     @Autowired
     private ClaimRepo claimRepo;
@@ -79,8 +83,8 @@ public class ClaimService {
         if (updates.containsKey("address")) {
             insurer.setAddress(updates.get("address"));
         }
-        if (updates.containsKey("phoneNumber")) {
-            insurer.setMobile_no(updates.get("phoneNumber"));
+        if (updates.containsKey("mobile_no")) {
+            insurer.setMobile_no(updates.get("mobile_no"));
         }
         if (updates.containsKey("dateOfBirth")) {
             insurer.setDob(updates.get("dateOfBirth"));
@@ -88,6 +92,18 @@ public class ClaimService {
     
         claim.setInsurer(insurer);
         return claimRepo.save(claim);
+    }
+
+    public List<Claim> findByClaimType(ClaimType claimType) {
+        return claimRepo.findByClaimType(claimType);
+    }
+    
+    public List<Claim> findByPolicyNo(String policyNo) {
+        return claimRepo.findByPolicyNo(policyNo);
+    }
+    
+    public List<Claim> findByTypeAndPolicy(ClaimType claimType, String policyNo) {
+        return claimRepo.findByClaimTypeAndPolicyNo(claimType, policyNo);
     }
 
 }
