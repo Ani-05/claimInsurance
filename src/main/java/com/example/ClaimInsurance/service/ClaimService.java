@@ -19,6 +19,11 @@ public class ClaimService {
     private ClaimRepo claimRepo;
 
     public void saveAll(Claim claim){
+        String type = claim.getClaimType().toString();
+        if (!"CASHLESS".equalsIgnoreCase(type) && !"REIMBURSEMENT".equalsIgnoreCase(type)) {
+            throw new IllegalArgumentException("Invalid claimType");
+        }
+    
         claimRepo.save(claim);
     }
 
@@ -26,24 +31,26 @@ public class ClaimService {
         return claimRepo.findAll();
     }
 
-    public Optional<Claim> updateByNo(Long claimNo, Insurer insurer){
-        Optional<Claim> optionalClaim =claimRepo.findById(claimNo);
-        if (optionalClaim.isPresent()) {
-            Claim existingClaim = optionalClaim.get();
-            Insurer existingInsurer = existingClaim.getInsurer();
-
-            existingInsurer.setName(insurer.getName());
-            existingInsurer.setAddress(insurer.getAddress());
-            existingInsurer.setDob(insurer.getDob());
-            existingInsurer.setEmail(insurer.getEmail());
-            existingInsurer.setMobile_no(insurer.getMobile_no());
-
-            claimRepo.save(existingClaim); 
-
-            return Optional.of(existingClaim);
+    public Claim updateByNo(Long claimNo, Insurer insurer) {
+        Claim existingClaim = claimRepo.findById(claimNo)
+                .orElseThrow(() -> new RuntimeException("Claim not found with claimNo: " + claimNo));
+    
+        Insurer existingInsurer = existingClaim.getInsurer();
+        if (existingInsurer == null) {
+            existingInsurer = new Insurer(); // fallback
         }
-        return Optional.empty();
+    
+        existingInsurer.setName(insurer.getName());
+        existingInsurer.setAddress(insurer.getAddress());
+        existingInsurer.setDob(insurer.getDob());
+        existingInsurer.setEmail(insurer.getEmail());
+        existingInsurer.setMobile_no(insurer.getMobile_no());
+    
+        existingClaim.setInsurer(existingInsurer);
+    
+        return claimRepo.save(existingClaim);
     }
+    
 
     public Optional<Claim> findByNo(Long claimNo){
         return claimRepo.findById(claimNo);
