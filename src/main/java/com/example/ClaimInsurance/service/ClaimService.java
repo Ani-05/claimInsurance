@@ -35,7 +35,7 @@ public class ClaimService {
         return claimRepo.findAll();
     }
 
-    public Claim updateByNo(Long claimNo, Insurer insurer) {
+    public Claim updateByNo(String claimNo, Insurer insurer) {
         Claim existingClaim = claimRepo.findById(claimNo)
                 .orElseThrow(() -> new RuntimeException("Claim not found with claimNo: " + claimNo));
     
@@ -56,17 +56,17 @@ public class ClaimService {
     }
     
 
-    public Optional<Claim> findByNo(Long claimNo){
+    public Optional<Claim> findByNo(String claimNo){
         return claimRepo.findById(claimNo);
     }
 
-    public boolean deleteByNo(Long claimNo){
+    public boolean deleteByNo(String claimNo){
         claimRepo.deleteById(claimNo);
         return true;
     }
 
-    public Claim updateField(Long claimNumber, Map<String, String> updates) {
-        Claim claim = claimRepo.findById(claimNumber)
+    public Claim updateField(String claimNo, Map<String, String> updates) {
+        Claim claim = claimRepo.findById(claimNo)
                 .orElseThrow(() -> new RuntimeException("Claim not found"));
     
         Insurer insurer = claim.getInsurer();

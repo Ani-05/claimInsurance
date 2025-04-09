@@ -42,17 +42,16 @@ public class ClaimController {
 
     @PostMapping("/data")
     public ResponseEntity<?> createClaim(@RequestBody Claim claim) {
-        try{
-        claimService.saveAll(claim);
-        return ResponseEntity.status(201).body(claim);}
-        catch(IllegalArgumentException e){
+        try {
+            claimService.saveAll(claim);
+            return ResponseEntity.status(201).body(claim);
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-  
-@GetMapping("/search/by-claimNo/{claimNo}")
-    public ResponseEntity<?> getByClaimNo(@PathVariable Long claimNo) {
+    @GetMapping("/search/by-claimNo/{claimNo}")
+    public ResponseEntity<?> getByClaimNo(@PathVariable String claimNo) {
         Optional<Claim> claim = claimService.findByNo(claimNo);
         if (claim.isPresent()) {
             return ResponseEntity.ok(claim.get());
@@ -61,7 +60,6 @@ public class ClaimController {
         }
     }
 
-    // ✅ GET - Search by Claim Type
     @GetMapping("/search/by-claimType/{claimType}")
     public ResponseEntity<List<Claim>> getByClaimType(@PathVariable String claimType) {
         ClaimType type;
@@ -74,13 +72,11 @@ public class ClaimController {
         return ResponseEntity.ok(claimService.findByClaimType(type));
     }
 
-    // ✅ GET - Search by Policy Number
     @GetMapping("/search/by-policy/{policyNo}")
     public ResponseEntity<List<Claim>> getByPolicy(@PathVariable String policyNo) {
         return ResponseEntity.ok(claimService.findByPolicyNo(policyNo));
     }
 
-    // ✅ GET - Search by both Claim Type and Policy Number
     @GetMapping("/search")
     public ResponseEntity<List<Claim>> getByTypeAndPolicy(
             @RequestParam String claimType,
@@ -96,10 +92,8 @@ public class ClaimController {
         return ResponseEntity.ok(claimService.findByTypeAndPolicy(type, policyNo));
     }
 
-    
-
     @PutMapping("/{claimNo}")
-    public ResponseEntity<?> updateClaim(@PathVariable Long claimNo, @RequestBody Insurer insurer) {
+    public ResponseEntity<?> updateClaim(@PathVariable String claimNo, @RequestBody Insurer insurer) {
         try {
             Claim updatedClaim = claimService.updateByNo(claimNo, insurer);
             return ResponseEntity.ok(updatedClaim);
@@ -109,7 +103,7 @@ public class ClaimController {
     }
 
     @DeleteMapping("/{claimNo}")
-    public ResponseEntity<String> deleteClaim(@PathVariable Long claimNo) {
+    public ResponseEntity<String> deleteClaim(@PathVariable String claimNo) {
         try {
             claimService.deleteByNo(claimNo);
             return ResponseEntity.ok("Deleted successfully");
@@ -121,13 +115,14 @@ public class ClaimController {
     @PatchMapping("/claim/update-insurer-fields")
     public ResponseEntity<?> updateInsurerFields(@RequestBody Map<String, String> request) {
         try {
-            if (!request.containsKey("claimNumber")) {
+            if (!request.containsKey("claimNo")) {
                 return ResponseEntity.badRequest().body("Missing claimNumber");
             }
 
-            Long claimNumber = Long.parseLong(request.get("claimNumber"));
+            String claimNo = request.get("claimNo");
+            ;
 
-            Claim updatedClaim = claimService.updateField(claimNumber, request);
+            Claim updatedClaim = claimService.updateField(claimNo, request);
             return ResponseEntity.ok(updatedClaim);
 
         } catch (NumberFormatException e) {
