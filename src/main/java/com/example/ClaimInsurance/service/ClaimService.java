@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+//import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.example.ClaimInsurance.entity.Claim;
 import com.example.ClaimInsurance.entity.ClaimType;
@@ -15,7 +15,7 @@ import com.example.ClaimInsurance.repository.ClaimRepo;
 
 
 
-@Component
+@Service
 public class ClaimService {
 
 
@@ -41,7 +41,7 @@ public class ClaimService {
     
         Insurer existingInsurer = existingClaim.getInsurer();
         if (existingInsurer == null) {
-            existingInsurer = new Insurer(); // fallback
+            existingInsurer = new Insurer(); 
         }
     
         existingInsurer.setName(insurer.getName());
@@ -86,8 +86,8 @@ public class ClaimService {
         if (updates.containsKey("mobile_no")) {
             insurer.setMobile_no(updates.get("mobile_no"));
         }
-        if (updates.containsKey("dateOfBirth")) {
-            insurer.setDob(updates.get("dateOfBirth"));
+        if (updates.containsKey("dob")) {
+            insurer.setDob(updates.get("dob"));
         }
     
         claim.setInsurer(insurer);

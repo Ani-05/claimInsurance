@@ -1,0 +1,37 @@
+{
+  "claimType": "CASHLESS",
+  "claimAmount": 5000,
+  "policyNo": "POL456",
+  "insurer": {
+    "name": "Anita Roy",
+    "dob": "1995-08-14",
+    "address": "Kolkata, India",
+    "email": "anita@example.com",
+    "mobile_no": "9876543210"
+  }
+}
+
+
+{
+  "claimType": "REIMBURSEMENT",
+  "claimAmount": 6500,
+  "policyNo": "POL456",
+  "insurer": {
+    "name": "Samuel Saha",
+    "dob": "1995-08-14",
+    "address": "Raipur, India",
+    "email": "saam@example.com",
+    "mobile_no": "9876523410"
+  }
+}
+//update insurer
+{
+  "claimNo":"bebdd975-25cf-4280-abea-cb15af4ea7f8",
+    "name": "Arpita Roy",
+    "address": "Tripura, India",
+    "email": "arpi@example.com"
+}
+
+/data -->Post
+/entry -->get
+http://localhost:8080/claim/search/by-claimNo-->searchClaimNo

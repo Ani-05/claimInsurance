@@ -25,7 +25,7 @@ import lombok.Setter;
 @ToString
 public class Claim {
     @Id
-    private String claimNo=UUID.randomUUID().toString();;
+    private String claimNo=UUID.randomUUID().toString();
     @Enumerated(EnumType.STRING)
     private ClaimType claimType;
     private double claimAmount;
