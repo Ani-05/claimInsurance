@@ -23,10 +23,10 @@ public class ClaimService {
     private ClaimRepo claimRepo;
 
     public void saveAll(Claim claim){
-        String type = claim.getClaimType().toString();
-        if (!"CASHLESS".equalsIgnoreCase(type) && !"REIMBURSEMENT".equalsIgnoreCase(type)) {
-            throw new IllegalArgumentException("Invalid claimType");
+        if (claim.getClaimType() == null) {
+            throw new IllegalArgumentException("claimType cannot be null or invalid");
         }
+        
     
         claimRepo.save(claim);
     }
@@ -39,10 +39,7 @@ public class ClaimService {
         Claim existingClaim = claimRepo.findById(claimNo)
                 .orElseThrow(() -> new RuntimeException("Claim not found with claimNo: " + claimNo));
     
-        Insurer existingInsurer = existingClaim.getInsurer();
-        if (existingInsurer == null) {
-            existingInsurer = new Insurer(); 
-        }
+        Insurer existingInsurer = Optional.ofNullable(existingClaim.getInsurer()).orElse(new Insurer());
     
         existingInsurer.setName(insurer.getName());
         existingInsurer.setAddress(insurer.getAddress());
@@ -61,6 +58,7 @@ public class ClaimService {
     }
 
     public boolean deleteByNo(String claimNo){
+        
         claimRepo.deleteById(claimNo);
         return true;
     }

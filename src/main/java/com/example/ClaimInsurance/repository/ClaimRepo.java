@@ -9,7 +9,6 @@ import java.util.List;
 
 
 public interface ClaimRepo extends JpaRepository<Claim,String> {
-    //boolean existsByClaimType(ClaimType claimType);
     List<Claim> findByClaimType(ClaimType claimType);
     List<Claim> findByPolicyNo(String policyNo);
     List<Claim> findByClaimTypeAndPolicyNo(ClaimType claimType, String policyNo);
